@@ -1,0 +1,1194 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Brief · Luis Pietri</title>
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Barlow:wght@300;400;500&family=Barlow+Condensed:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <!-- sin librería externa, usamos fetch directo a Formspree -->
+  <style>
+    :root {
+      --tq: #00C8BE;
+      --black: #080C0C;
+      --surface: #0F1515;
+      --line: rgba(0,200,190,0.15);
+      --line-strong: rgba(0,200,190,0.35);
+      --text: #D8EEEC;
+      --muted: #4A7070;
+      --error: #FF4F5A;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--black);
+      color: var(--text);
+      font-family: 'Barlow', sans-serif;
+      font-weight: 300;
+      font-size: 15px;
+      line-height: 1.6;
+    }
+
+    /* ─── HERO HEADER ─────────────────────────────── */
+    .hero {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      min-height: 100vh;
+      border-bottom: 1px solid var(--line-strong);
+    }
+
+    .hero-left {
+      padding: 80px 64px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      border-right: 1px solid var(--line-strong);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-left::before {
+      content: 'LP';
+      position: absolute;
+      bottom: -60px;
+      left: -20px;
+      font-family: 'Anton', sans-serif;
+      font-size: 280px;
+      color: rgba(0,200,190,0.04);
+      line-height: 1;
+      pointer-events: none;
+      user-select: none;
+    }
+
+    .tag {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--tq);
+    }
+
+    .hero-name {
+      font-family: 'Anton', sans-serif;
+      font-size: clamp(52px, 6vw, 88px);
+      line-height: 0.95;
+      letter-spacing: 0.01em;
+      text-transform: uppercase;
+      color: #fff;
+    }
+
+    .hero-name span {
+      display: block;
+      color: var(--tq);
+    }
+
+    .hero-title {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 13px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-top: 20px;
+      line-height: 2;
+      border-top: 1px solid var(--line-strong);
+      padding-top: 20px;
+    }
+
+    .hero-title strong {
+      color: var(--text);
+      font-weight: 500;
+    }
+
+    .hero-right {
+      padding: 80px 64px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 40px;
+    }
+
+    .intro-block {}
+
+    .intro-block p {
+      font-size: 1rem;
+      line-height: 1.75;
+      color: var(--muted);
+      max-width: 400px;
+    }
+
+    .intro-block p strong {
+      color: var(--text);
+      font-weight: 400;
+    }
+
+    .services {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .service-line {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 16px 0;
+      border-top: 1px solid var(--line);
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 13px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      transition: color 0.2s;
+    }
+
+    .service-line:last-child { border-bottom: 1px solid var(--line); }
+
+    .service-line .dot {
+      width: 6px;
+      height: 6px;
+      background: var(--tq);
+      flex-shrink: 0;
+    }
+
+    .contact-row {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .contact-row a {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 13px;
+      letter-spacing: 0.1em;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .contact-row a:hover { color: var(--tq); }
+
+    /* ─── TABS ─────────────────────────────────────── */
+    .tabs-bar {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      border-bottom: 1px solid var(--line-strong);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: var(--black);
+    }
+
+    .tab-btn {
+      padding: 22px 48px;
+      font-family: 'Anton', sans-serif;
+      font-size: 15px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      background: none;
+      border: none;
+      cursor: pointer;
+      transition: color 0.25s, background 0.25s;
+      text-align: left;
+      border-right: 1px solid var(--line-strong);
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      position: relative;
+    }
+
+    .tab-btn:last-child { border-right: none; }
+
+    .tab-btn.active {
+      color: var(--tq);
+      background: var(--surface);
+    }
+
+    .tab-btn.active::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: var(--tq);
+    }
+
+    .tab-num {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 11px;
+      letter-spacing: 0.2em;
+      color: var(--muted);
+      padding: 3px 8px;
+      border: 1px solid var(--line-strong);
+    }
+
+    .tab-btn.active .tab-num {
+      border-color: var(--tq);
+      color: var(--tq);
+    }
+
+    /* ─── FORM PANELS ──────────────────────────────── */
+    .form-panel { display: none; }
+    .form-panel.active { display: block; }
+
+    /* ─── SECTION ──────────────────────────────────── */
+    .section {
+      display: grid;
+      grid-template-columns: 240px 1fr;
+      border-bottom: 1px solid var(--line);
+      animation: revealIn 0.35s ease both;
+    }
+
+    @keyframes revealIn {
+      from { opacity:0; transform: translateY(8px); }
+      to   { opacity:1; transform: translateY(0); }
+    }
+
+    .section-label {
+      padding: 48px 48px 48px 64px;
+      border-right: 1px solid var(--line);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      background: var(--surface);
+    }
+
+    .section-num {
+      font-family: 'Anton', sans-serif;
+      font-size: 42px;
+      color: rgba(0,200,190,0.12);
+      line-height: 1;
+    }
+
+    .section-title {
+      font-family: 'Anton', sans-serif;
+      font-size: 13px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--tq);
+    }
+
+    .section-desc {
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.6;
+      max-width: 160px;
+    }
+
+    .section-fields {
+      padding: 48px 64px;
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+    }
+
+    /* ─── FIELD ─────────────────────────────────────── */
+    .field { display: flex; flex-direction: column; gap: 8px; }
+
+    .row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+
+    label {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 11px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--muted);
+      font-weight: 500;
+    }
+
+    label .req { color: var(--tq); }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="tel"],
+    input[type="url"],
+    select,
+    textarea {
+      width: 100%;
+      background: transparent;
+      border: none;
+      border-bottom: 1px solid var(--line-strong);
+      padding: 12px 0;
+      font-family: 'Barlow', sans-serif;
+      font-size: 15px;
+      font-weight: 300;
+      color: var(--text);
+      outline: none;
+      transition: border-color 0.2s;
+      appearance: none;
+      border-radius: 0;
+    }
+
+    input::placeholder, textarea::placeholder { color: #2A4848; }
+
+    input:focus, select:focus, textarea:focus {
+      border-bottom-color: var(--tq);
+    }
+
+    textarea { resize: vertical; min-height: 90px; }
+
+    select {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%2300C8BE'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 4px center;
+      padding-right: 24px;
+      cursor: pointer;
+    }
+
+    select option { background: #0F1515; }
+
+    /* ─── CHECKBOX GRID ─────────────────────────────── */
+    .check-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 1px;
+      border: 1px solid var(--line);
+      background: var(--line);
+    }
+
+    .check-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 16px;
+      background: var(--black);
+      cursor: pointer;
+      transition: background 0.15s;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 13px;
+      letter-spacing: 0.06em;
+      color: var(--muted);
+    }
+
+    .check-item:hover { background: var(--surface); color: var(--text); }
+
+    .check-item input[type="checkbox"] {
+      width: 14px;
+      height: 14px;
+      accent-color: var(--tq);
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    /* ─── RANGE ─────────────────────────────────────── */
+    .range-row { display: grid; grid-template-columns: 1fr auto; align-items: end; gap: 20px; }
+
+    .range-val {
+      font-family: 'Anton', sans-serif;
+      font-size: 28px;
+      color: var(--tq);
+      line-height: 1;
+      white-space: nowrap;
+      padding-bottom: 10px;
+    }
+
+    input[type="range"] {
+      -webkit-appearance: none;
+      width: 100%;
+      height: 1px;
+      background: var(--line-strong);
+      border: none;
+      padding: 0;
+      margin: 8px 0;
+      cursor: pointer;
+      border-bottom: none;
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 16px;
+      height: 16px;
+      background: var(--tq);
+      cursor: pointer;
+      border-radius: 0;
+    }
+
+    input[type="range"]:focus { border-bottom: none; }
+
+    /* ─── SUBMIT ZONE ───────────────────────────────── */
+    .submit-zone {
+      display: grid;
+      grid-template-columns: 240px 1fr;
+      border-bottom: 1px solid var(--line-strong);
+    }
+
+    .submit-aside {
+      padding: 48px 48px 48px 64px;
+      background: var(--surface);
+      border-right: 1px solid var(--line);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .submit-aside .tag { font-size: 10px; }
+    .submit-aside p { font-size: 12px; color: var(--muted); line-height: 1.6; }
+    .submit-aside a { color: var(--tq); text-decoration: none; font-size: 12px; }
+
+    .submit-main {
+      padding: 48px 64px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 16px;
+    }
+
+    .btn-submit {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 0;
+      background: none;
+      border: none;
+      cursor: pointer;
+      width: fit-content;
+      transition: transform 0.2s;
+    }
+
+    .btn-submit:hover { transform: translateX(8px); }
+    .btn-submit:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+
+    .btn-submit .btn-text {
+      font-family: 'Anton', sans-serif;
+      font-size: clamp(28px, 3vw, 44px);
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: #fff;
+      line-height: 1;
+      transition: color 0.2s;
+    }
+
+    .btn-submit:hover .btn-text { color: var(--tq); }
+
+    .btn-submit .btn-arrow {
+      width: 48px;
+      height: 48px;
+      border: 1px solid var(--tq);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: background 0.2s;
+    }
+
+    .btn-submit:hover .btn-arrow { background: var(--tq); }
+
+    .btn-submit:hover .btn-arrow svg path { stroke: var(--black); }
+
+    .btn-note {
+      font-size: 12px;
+      color: var(--muted);
+      font-family: 'Barlow Condensed', sans-serif;
+      letter-spacing: 0.08em;
+    }
+
+    /* ─── FOOTER ────────────────────────────────────── */
+    footer {
+      padding: 32px 64px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    footer p {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 11px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    /* ─── SPINNER ───────────────────────────────────── */
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .spinner {
+      width: 20px; height: 20px;
+      border: 1px solid var(--muted);
+      border-top-color: var(--tq);
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      display: none;
+    }
+    .btn-submit.loading .spinner { display: block; }
+
+    /* ─── TOAST ─────────────────────────────────────── */
+    .toast {
+      position: fixed;
+      bottom: 32px;
+      left: 50%;
+      transform: translateX(-50%) translateY(80px);
+      background: var(--surface);
+      border-top: 2px solid var(--tq);
+      color: var(--text);
+      padding: 20px 36px;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 13px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      z-index: 100;
+      transition: transform 0.4s cubic-bezier(0.34, 1.2, 0.64, 1);
+      white-space: nowrap;
+    }
+    .toast.show { transform: translateX(-50%) translateY(0); }
+    .toast.error { border-top-color: var(--error); }
+
+    /* ─── RESPONSIVE ────────────────────────────────── */
+    @media (max-width: 860px) {
+      .hero { grid-template-columns: 1fr; min-height: auto; }
+      .hero-left { padding: 48px 32px; border-right: none; border-bottom: 1px solid var(--line-strong); }
+      .hero-left::before { font-size: 160px; }
+      .hero-right { padding: 48px 32px; }
+      .tabs-bar .tab-btn { padding: 18px 24px; font-size: 13px; }
+      .section, .submit-zone { grid-template-columns: 1fr; }
+      .section-label, .submit-aside {
+        padding: 28px 32px;
+        border-right: none;
+        border-bottom: 1px solid var(--line);
+        flex-direction: row;
+        align-items: center;
+        gap: 20px;
+      }
+      .section-num { font-size: 28px; }
+      .section-fields, .submit-main { padding: 32px; }
+      .row-2 { grid-template-columns: 1fr; }
+      footer { padding: 24px 32px; flex-direction: column; gap: 8px; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══ HERO ════════════════════════════════════════════ -->
+<section class="hero">
+  <div class="hero-left">
+    <div class="tag">Diseño Gráfico · Venezuela</div>
+    <div>
+      <div class="hero-name">Luis<span>Pietri</span></div>
+      <div class="hero-title">
+        <strong>Lic. en Diseño Gráfico</strong><br>
+        Identidad Visual · Redes Sociales<br>
+        Branding · Comunicación Visual
+      </div>
+    </div>
+    <div class="contact-row">
+      <a href="mailto:luissilvat2@gmail.com">luissilvat2@gmail.com</a>
+    </div>
+  </div>
+
+  <div class="hero-right">
+    <div class="intro-block">
+      <div class="tag" style="margin-bottom:20px;">Brief de Proyecto</div>
+      <p>
+        Para poder ofrecerte una propuesta clara y personalizada, necesito conocer tu proyecto a fondo.<br><br>
+        <strong>Completa el brief correspondiente</strong> y me pondré en contacto contigo en menos de 48 horas con una propuesta a tu medida.
+      </p>
+    </div>
+    <div class="services">
+      <div class="service-line"><div class="dot"></div>Identidad Visual · Logotipo · Branding</div>
+      <div class="service-line"><div class="dot"></div>Redes Sociales · Contenido · Estrategia</div>
+      <div class="service-line"><div class="dot"></div>Manual de Marca · Papelería Corporativa</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ TABS ═════════════════════════════════════════════ -->
+<div class="tabs-bar">
+  <button class="tab-btn active" onclick="switchTab('iv')">
+    <span class="tab-num">01</span> Identidad Visual
+  </button>
+  <button class="tab-btn" onclick="switchTab('rs')">
+    <span class="tab-num">02</span> Redes Sociales
+  </button>
+</div>
+
+<!-- ═══ PANEL IDENTIDAD VISUAL ═══════════════════════════ -->
+<div class="form-panel active" id="panel-iv">
+<form id="form-iv" onsubmit="sendEmail(event,'iv')">
+
+  <!-- 01 Contacto -->
+  <div class="section">
+    <div class="section-label">
+      <div class="section-num">01</div>
+      <div class="section-title">Contacto</div>
+      <div class="section-desc">Datos básicos para poder responderte</div>
+    </div>
+    <div class="section-fields">
+      <div class="row-2">
+        <div class="field">
+          <label>Nombre completo <span class="req">*</span></label>
+          <input type="text" name="nombre" placeholder="Tu nombre" required/>
+        </div>
+        <div class="field">
+          <label>Empresa / Marca <span class="req">*</span></label>
+          <input type="text" name="empresa" placeholder="Nombre de tu marca" required/>
+        </div>
+      </div>
+      <div class="row-2">
+        <div class="field">
+          <label>Correo electrónico <span class="req">*</span></label>
+          <input type="email" name="email" placeholder="hola@tuempresa.com" required/>
+        </div>
+        <div class="field">
+          <label>WhatsApp / Teléfono</label>
+          <input type="tel" name="telefono" placeholder="+58 412 000 0000"/>
+        </div>
+      </div>
+      <div class="field">
+        <label>Sitio web actual (si tienes)</label>
+        <input type="url" name="web" placeholder="https://tuempresa.com"/>
+      </div>
+    </div>
+  </div>
+
+  <!-- 02 Tu Negocio -->
+  <div class="section">
+    <div class="section-label">
+      <div class="section-num">02</div>
+      <div class="section-title">Tu Negocio</div>
+      <div class="section-desc">Quiero entender tu empresa y tu mercado</div>
+    </div>
+    <div class="section-fields">
+      <div class="field">
+        <label>¿A qué se dedica tu empresa o marca? <span class="req">*</span></label>
+        <textarea name="descripcion_negocio" placeholder="Describe qué haces, qué vendes o qué servicio ofreces..." required></textarea>
+      </div>
+      <div class="field">
+        <label>¿Cuál es tu propuesta de valor? ¿Qué te diferencia?</label>
+        <textarea name="propuesta_valor" placeholder="Lo que nos diferencia de la competencia es..."></textarea>
+      </div>
+      <div class="field">
+        <label>¿Quién es tu cliente ideal? <span class="req">*</span></label>
+        <textarea name="cliente_ideal" placeholder="Edad, género, intereses, estilo de vida, nivel socioeconómico..." required></textarea>
+      </div>
+      <div class="row-2">
+        <div class="field">
+          <label>Industria / Sector</label>
+          <select name="industria">
+            <option value="">Selecciona</option>
+            <option>Moda y belleza</option>
+            <option>Alimentación y restaurantes</option>
+            <option>Salud y bienestar</option>
+            <option>Tecnología</option>
+            <option>Servicios profesionales</option>
+            <option>Educación</option>
+            <option>Arte y entretenimiento</option>
+            <option>Comercio / Retail</option>
+            <option>Bienes raíces</option>
+            <option>ONG / Social</option>
+            <option>Otro</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Etapa del negocio</label>
+          <select name="etapa">
+            <option value="">Selecciona</option>
+            <option>Emprendimiento nuevo</option>
+            <option>Negocio existente — Rebranding</option>
+            <option>Expansión / Nueva línea</option>
+          </select>
+        </div>
+      </div>
+      <div class="field">
+        <label>Competidores o marcas de referencia (2-3)</label>
+        <input type="text" name="competidores" placeholder="Ej: Apple, Zara, Starbucks…"/>
+      </div>
+    </div>
+  </div>
+
+  <!-- 03 Personalidad -->
+  <div class="section">
+    <div class="section-label">
+      <div class="section-num">03</div>
+      <div class="section-title">Personalidad</div>
+      <div class="section-desc">El carácter que debe transmitir tu marca</div>
+    </div>
+    <div class="section-fields">
+      <div class="field">
+        <label>¿Cómo quieres que se sienta tu marca? (selecciona las que apliquen)</label>
+        <div class="check-grid">
+          <label class="check-item"><input type="checkbox" name="personalidad" value="Profesional"/> Profesional</label>
+          <label class="check-item"><input type="checkbox" name="personalidad" value="Minimalista"/> Minimalista</label>
+          <label class="check-item"><input type="checkbox" name="personalidad" value="Atrevida"/> Atrevida / Bold</label>
+          <label class="check-item"><input type="checkbox" name="personalidad" value="Elegante"/> Elegante / Luxury</label>
+          <label class="check-item"><input type="checkbox" name="personalidad" value="Juvenil"/> Juvenil / Fresca</label>
+          <label class="check-item"><input type="checkbox" name="personalidad" value="Divertida"/> Divertida / Playful</label>
+          <label class="check-item"><input type="checkbox" name="personalidad" value="Natural"/> Natural / Orgánica</label>
+          <label class="check-item"><input type="checkbox" name="personalidad" value="Tecnologica"/> Tecnológica / Futurista</label>
+          <label class="check-item"><input type="checkbox" name="personalidad" value="Artesanal"/> Artesanal / Handmade</label>
+          <label class="check-item"><input type="checkbox" name="personalidad" value="Formal"/> Seria / Formal</label>
+        </div>
+      </div>
+      <div class="field">
+        <label>Si tu marca fuera una persona, ¿cómo la describirías?</label>
+        <textarea name="marca_persona" placeholder="Ej: Una mujer de 35 años, segura, sofisticada, que ama el diseño y los viajes…"></textarea>
+      </div>
+      <div class="field">
+        <label>Preferencias de color (o estados de ánimo)</label>
+        <textarea name="colores" placeholder="Ej: Tonos tierra, nada de rojo, que transmita calma y sofisticación…"></textarea>
+      </div>
+      <div class="field">
+        <label>Referencias de logotipos que te gusten (y por qué)</label>
+        <textarea name="referencias_logo" placeholder="Ej: El logo de Airbnb por su simplicidad, el de Chanel por su elegancia…"></textarea>
+      </div>
+    </div>
+  </div>
+
+  <!-- 04 Alcance -->
+  <div class="section">
+    <div class="section-label">
+      <div class="section-num">04</div>
+      <div class="section-title">Alcance</div>
+      <div class="section-desc">Entregables, presupuesto y plazos</div>
+    </div>
+    <div class="section-fields">
+      <div class="field">
+        <label>¿Qué necesitas? (selecciona todo lo que aplique)</label>
+        <div class="check-grid">
+          <label class="check-item"><input type="checkbox" name="entregables" value="Logotipo principal"/> Logotipo principal</label>
+          <label class="check-item"><input type="checkbox" name="entregables" value="Variaciones del logo"/> Variaciones del logo</label>
+          <label class="check-item"><input type="checkbox" name="entregables" value="Paleta de colores"/> Paleta de colores</label>
+          <label class="check-item"><input type="checkbox" name="entregables" value="Tipografías"/> Tipografías</label>
+          <label class="check-item"><input type="checkbox" name="entregables" value="Tarjetas de presentación"/> Tarjetas de presentación</label>
+          <label class="check-item"><input type="checkbox" name="entregables" value="Manual de marca"/> Manual de marca</label>
+          <label class="check-item"><input type="checkbox" name="entregables" value="Papelería corporativa"/> Papelería corporativa</label>
+          <label class="check-item"><input type="checkbox" name="entregables" value="Mockups"/> Mockups de presentación</label>
+        </div>
+      </div>
+      <div class="row-2">
+        <div class="field">
+          <label>Presupuesto aproximado</label>
+          <select name="presupuesto">
+            <option value="">Prefiero no indicarlo</option>
+            <option>Menos de $300 USD</option>
+            <option>$300 – $600 USD</option>
+            <option>$600 – $1,200 USD</option>
+            <option>$1,200 – $2,500 USD</option>
+            <option>Más de $2,500 USD</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Plazo de entrega</label>
+          <select name="plazo">
+            <option value="">Sin fecha límite</option>
+            <option>Urgente — menos de 1 semana</option>
+            <option>1 – 2 semanas</option>
+            <option>2 – 4 semanas</option>
+            <option>1 – 2 meses</option>
+            <option>Más de 2 meses</option>
+          </select>
+        </div>
+      </div>
+      <div class="field">
+        <label>¿Algo que deba incluirse o que definitivamente no quieres?</label>
+        <textarea name="restricciones" placeholder="Ej: Quiero que aparezca una hoja porque vendemos café. Jamás quiero el color rosado."></textarea>
+      </div>
+      <div class="field">
+        <label>Comentarios adicionales</label>
+        <textarea name="notas" placeholder="Cualquier otra cosa relevante para el proyecto…"></textarea>
+      </div>
+    </div>
+  </div>
+
+  <!-- Submit -->
+  <div class="submit-zone">
+    <div class="submit-aside">
+      <div class="tag">Siguiente paso</div>
+      <p>Recibirás respuesta en menos de 48 horas con una propuesta personalizada.</p>
+      <a href="mailto:luissilvat2@gmail.com">luissilvat2@gmail.com</a>
+    </div>
+    <div class="submit-main">
+      <button type="submit" class="btn-submit" id="btn-iv">
+        <div class="spinner"></div>
+        <span class="btn-text">Enviar Brief</span>
+        <div class="btn-arrow">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+            <path d="M3 9h12M10 4l5 5-5 5" stroke="#00C8BE" stroke-width="1.5" stroke-linecap="square"/>
+          </svg>
+        </div>
+      </button>
+      <p class="btn-note">Brief · Identidad Visual · Luis Pietri</p>
+    </div>
+  </div>
+
+</form>
+</div>
+
+<!-- ═══ PANEL REDES SOCIALES ══════════════════════════════ -->
+<div class="form-panel" id="panel-rs">
+<form id="form-rs" onsubmit="sendEmail(event,'rs')">
+
+  <!-- 01 Contacto -->
+  <div class="section">
+    <div class="section-label">
+      <div class="section-num">01</div>
+      <div class="section-title">Contacto</div>
+      <div class="section-desc">Datos básicos para poder responderte</div>
+    </div>
+    <div class="section-fields">
+      <div class="row-2">
+        <div class="field">
+          <label>Nombre completo <span class="req">*</span></label>
+          <input type="text" name="nombre" placeholder="Tu nombre" required/>
+        </div>
+        <div class="field">
+          <label>Empresa / Marca <span class="req">*</span></label>
+          <input type="text" name="empresa" placeholder="Nombre de tu marca" required/>
+        </div>
+      </div>
+      <div class="row-2">
+        <div class="field">
+          <label>Correo electrónico <span class="req">*</span></label>
+          <input type="email" name="email" placeholder="hola@tuempresa.com" required/>
+        </div>
+        <div class="field">
+          <label>WhatsApp / Teléfono</label>
+          <input type="tel" name="telefono" placeholder="+58 412 000 0000"/>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 02 Tu Marca en Redes -->
+  <div class="section">
+    <div class="section-label">
+      <div class="section-num">02</div>
+      <div class="section-title">Tu Marca</div>
+      <div class="section-desc">Tu presencia digital actual</div>
+    </div>
+    <div class="section-fields">
+      <div class="field">
+        <label>¿A qué se dedica tu marca? <span class="req">*</span></label>
+        <textarea name="descripcion_negocio" placeholder="Describe brevemente tu negocio o marca…" required></textarea>
+      </div>
+      <div class="field">
+        <label>¿En qué redes tienes o quieres presencia? <span class="req">*</span></label>
+        <div class="check-grid">
+          <label class="check-item"><input type="checkbox" name="redes" value="Instagram"/> Instagram</label>
+          <label class="check-item"><input type="checkbox" name="redes" value="Facebook"/> Facebook</label>
+          <label class="check-item"><input type="checkbox" name="redes" value="TikTok"/> TikTok</label>
+          <label class="check-item"><input type="checkbox" name="redes" value="LinkedIn"/> LinkedIn</label>
+          <label class="check-item"><input type="checkbox" name="redes" value="Twitter/X"/> Twitter / X</label>
+          <label class="check-item"><input type="checkbox" name="redes" value="Pinterest"/> Pinterest</label>
+          <label class="check-item"><input type="checkbox" name="redes" value="YouTube"/> YouTube</label>
+          <label class="check-item"><input type="checkbox" name="redes" value="WhatsApp Business"/> WhatsApp Business</label>
+        </div>
+      </div>
+      <div class="field">
+        <label>Handles / nombres de usuario actuales</label>
+        <input type="text" name="handles" placeholder="@mimarca en IG, @mimarca.oficial en FB…"/>
+      </div>
+      <div class="field">
+        <label>¿Tienes manual de marca o logotipo definido?</label>
+        <select name="tiene_manual">
+          <option value="">Selecciona</option>
+          <option>Sí, tengo manual de marca completo</option>
+          <option>Tengo logo pero no manual</option>
+          <option>Tengo algunos colores y fuentes definidos</option>
+          <option>No tengo nada definido aún</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- 03 Contenido -->
+  <div class="section">
+    <div class="section-label">
+      <div class="section-num">03</div>
+      <div class="section-title">Contenido</div>
+      <div class="section-desc">Objetivos, tipo de publicaciones y tono</div>
+    </div>
+    <div class="section-fields">
+      <div class="field">
+        <label>Objetivo principal de tus redes sociales <span class="req">*</span></label>
+        <div class="check-grid">
+          <label class="check-item"><input type="checkbox" name="objetivo" value="Aumentar seguidores"/> Aumentar seguidores</label>
+          <label class="check-item"><input type="checkbox" name="objetivo" value="Generar ventas"/> Generar ventas</label>
+          <label class="check-item"><input type="checkbox" name="objetivo" value="Posicionar marca"/> Posicionar la marca</label>
+          <label class="check-item"><input type="checkbox" name="objetivo" value="Educar audiencia"/> Educar a la audiencia</label>
+          <label class="check-item"><input type="checkbox" name="objetivo" value="Aumentar engagement"/> Aumentar engagement</label>
+          <label class="check-item"><input type="checkbox" name="objetivo" value="Trafico web"/> Tráfico al sitio web</label>
+        </div>
+      </div>
+      <div class="field">
+        <label>Tipo de publicaciones que necesitas</label>
+        <div class="check-grid">
+          <label class="check-item"><input type="checkbox" name="tipo_post" value="Posts feed"/> Posts para feed</label>
+          <label class="check-item"><input type="checkbox" name="tipo_post" value="Stories"/> Stories</label>
+          <label class="check-item"><input type="checkbox" name="tipo_post" value="Reels cover"/> Portadas de Reels</label>
+          <label class="check-item"><input type="checkbox" name="tipo_post" value="Carruseles"/> Carruseles</label>
+          <label class="check-item"><input type="checkbox" name="tipo_post" value="Highlights"/> Portadas Highlights</label>
+          <label class="check-item"><input type="checkbox" name="tipo_post" value="Banners"/> Banners / Anuncios</label>
+          <label class="check-item"><input type="checkbox" name="tipo_post" value="Foto de perfil"/> Foto de perfil</label>
+          <label class="check-item"><input type="checkbox" name="tipo_post" value="Plantillas"/> Plantillas editables</label>
+        </div>
+      </div>
+      <div class="field">
+        <label>Publicaciones mensuales (aproximado)</label>
+        <div class="range-row">
+          <div>
+            <input type="range" name="posts_mes" min="4" max="60" value="12" step="4"
+              oninput="document.getElementById('rv-rs').textContent = this.value"/>
+          </div>
+          <div class="range-val"><span id="rv-rs">12</span> <span style="font-size:14px;color:var(--muted);font-family:'Barlow Condensed'">posts/mes</span></div>
+        </div>
+      </div>
+      <div class="field">
+        <label>Temas o categorías de contenido</label>
+        <textarea name="temas" placeholder="Ej: Consejos, detrás de cámaras, lanzamientos, testimonios, motivación…"></textarea>
+      </div>
+      <div class="field">
+        <label>Tono de comunicación <span class="req">*</span></label>
+        <div class="check-grid">
+          <label class="check-item"><input type="checkbox" name="tono" value="Formal"/> Formal</label>
+          <label class="check-item"><input type="checkbox" name="tono" value="Cercano"/> Cercano / Amigable</label>
+          <label class="check-item"><input type="checkbox" name="tono" value="Inspiracional"/> Inspiracional</label>
+          <label class="check-item"><input type="checkbox" name="tono" value="Divertido"/> Divertido / Humor</label>
+          <label class="check-item"><input type="checkbox" name="tono" value="Educativo"/> Educativo</label>
+          <label class="check-item"><input type="checkbox" name="tono" value="Disruptivo"/> Provocador / Disruptivo</label>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 04 Estética -->
+  <div class="section">
+    <div class="section-label">
+      <div class="section-num">04</div>
+      <div class="section-title">Estética</div>
+      <div class="section-desc">El universo visual de tu contenido</div>
+    </div>
+    <div class="section-fields">
+      <div class="field">
+        <label>Estilo visual deseado</label>
+        <div class="check-grid">
+          <label class="check-item"><input type="checkbox" name="estilo" value="Minimalista"/> Minimalista</label>
+          <label class="check-item"><input type="checkbox" name="estilo" value="Colorido"/> Colorido / Vibrante</label>
+          <label class="check-item"><input type="checkbox" name="estilo" value="Dark"/> Oscuro / Dark</label>
+          <label class="check-item"><input type="checkbox" name="estilo" value="Pastel"/> Pastel / Suave</label>
+          <label class="check-item"><input type="checkbox" name="estilo" value="Fotografico"/> Fotográfico</label>
+          <label class="check-item"><input type="checkbox" name="estilo" value="Ilustrado"/> Ilustrado</label>
+          <label class="check-item"><input type="checkbox" name="estilo" value="Retro"/> Retro / Vintage</label>
+          <label class="check-item"><input type="checkbox" name="estilo" value="Moderno"/> Moderno / Contemporáneo</label>
+        </div>
+      </div>
+      <div class="field">
+        <label>Cuentas de referencia (Instagram, Pinterest, etc.)</label>
+        <textarea name="referencias" placeholder="Ej: @cuenta1 por su uso del color, @cuenta2 por su consistencia visual…"></textarea>
+      </div>
+      <div class="field">
+        <label>Colores a usar o evitar</label>
+        <textarea name="colores" placeholder="Ej: Azul marino y dorado como base. Sin verde."></textarea>
+      </div>
+      <div class="field">
+        <label>¿Proporcionas el material (fotos/videos)?</label>
+        <select name="material">
+          <option value="">Selecciona</option>
+          <option>Proporciono todo el material</option>
+          <option>Tengo algo pero necesito apoyo con imágenes de stock</option>
+          <option>Necesito que se consiga todo el material</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- 05 Presupuesto -->
+  <div class="section">
+    <div class="section-label">
+      <div class="section-num">05</div>
+      <div class="section-title">Presupuesto</div>
+      <div class="section-desc">Inversión y tipo de contratación</div>
+    </div>
+    <div class="section-fields">
+      <div class="row-2">
+        <div class="field">
+          <label>Presupuesto mensual aproximado</label>
+          <select name="presupuesto">
+            <option value="">Prefiero no indicarlo</option>
+            <option>Menos de $150 USD/mes</option>
+            <option>$150 – $300 USD/mes</option>
+            <option>$300 – $600 USD/mes</option>
+            <option>$600 – $1,000 USD/mes</option>
+            <option>Más de $1,000 USD/mes</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Tipo de contratación</label>
+          <select name="contrato">
+            <option value="">Selecciona</option>
+            <option>Pack puntual — Proyecto único</option>
+            <option>Mensual — Retainer</option>
+            <option>Trimestral</option>
+            <option>Aún no lo tengo claro</option>
+          </select>
+        </div>
+      </div>
+      <div class="field">
+        <label>¿Cuándo quieres comenzar?</label>
+        <select name="inicio">
+          <option value="">Selecciona</option>
+          <option>Inmediatamente</option>
+          <option>En 1 – 2 semanas</option>
+          <option>El próximo mes</option>
+          <option>Aún estoy explorando opciones</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Comentarios adicionales</label>
+        <textarea name="notas" placeholder="Cualquier cosa que consideres importante para el proyecto…"></textarea>
+      </div>
+    </div>
+  </div>
+
+  <!-- Submit -->
+  <div class="submit-zone">
+    <div class="submit-aside">
+      <div class="tag">Siguiente paso</div>
+      <p>Recibirás respuesta en menos de 48 horas con una propuesta personalizada.</p>
+      <a href="mailto:luissilvat2@gmail.com">luissilvat2@gmail.com</a>
+    </div>
+    <div class="submit-main">
+      <button type="submit" class="btn-submit" id="btn-rs">
+        <div class="spinner"></div>
+        <span class="btn-text">Enviar Brief</span>
+        <div class="btn-arrow">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+            <path d="M3 9h12M10 4l5 5-5 5" stroke="#00C8BE" stroke-width="1.5" stroke-linecap="square"/>
+          </svg>
+        </div>
+      </button>
+      <p class="btn-note">Brief · Redes Sociales · Luis Pietri</p>
+    </div>
+  </div>
+
+</form>
+</div>
+
+<!-- ═══ FOOTER ════════════════════════════════════════════ -->
+<footer>
+  <p>Luis Pietri — Lic. en Diseño Gráfico · Venezuela</p>
+  <p>© 2025 · Todos los derechos reservados</p>
+</footer>
+
+<!-- ═══ TOAST ══════════════════════════════════════════════ -->
+<div class="toast" id="toast"></div>
+
+<script>
+  // ─────────────────────────────────────────────────────
+  // FORMSPREE — reemplaza YOUR_FORM_ID con tu ID real
+  // Crea tu form gratis en: https://formspree.io
+  // ─────────────────────────────────────────────────────
+  const FORMSPREE_URL = "https://formspree.io/f/xykvdzjr";
+
+  // ── Tab switch ────────────────────────────────────────
+  function switchTab(t) {
+    document.querySelectorAll('.tab-btn').forEach((b,i)=>{
+      b.classList.toggle('active', (t==='iv'&&i===0)||(t==='rs'&&i===1));
+    });
+    document.querySelectorAll('.form-panel').forEach(p=>p.classList.remove('active'));
+    document.getElementById('panel-'+t).classList.add('active');
+    window.scrollTo({top: document.querySelector('.tabs-bar').offsetTop - 10, behavior:'smooth'});
+  }
+
+  // ── Toast ─────────────────────────────────────────────
+  function showToast(msg, err=false){
+    const t=document.getElementById('toast');
+    t.textContent=msg;
+    t.className='toast'+(err?' error':'');
+    t.classList.add('show');
+    setTimeout(()=>t.classList.remove('show'),5000);
+  }
+
+  // ── Recolectar datos del form ─────────────────────────
+  function recolectar(form) {
+    const cbGroups={};
+    form.querySelectorAll('input[type="checkbox"]').forEach(cb=>{
+      if(!cbGroups[cb.name]) cbGroups[cb.name]=[];
+      if(cb.checked) cbGroups[cb.name].push(cb.value);
+    });
+    const labels={
+      nombre:'Nombre',empresa:'Empresa',email:'Email',telefono:'Teléfono',web:'Sitio web',
+      descripcion_negocio:'Descripción del negocio',propuesta_valor:'Propuesta de valor',
+      cliente_ideal:'Cliente ideal',industria:'Industria',etapa:'Etapa del negocio',
+      competidores:'Competidores',personalidad:'Personalidad de marca',
+      marca_persona:'Si fuera una persona',colores:'Preferencias de color',
+      referencias_logo:'Referencias de logo',entregables:'Entregables necesarios',
+      presupuesto:'Presupuesto',plazo:'Plazo de entrega',restricciones:'Restricciones',
+      notas:'Notas adicionales',redes:'Redes sociales',handles:'Handles',
+      tiene_manual:'Manual de marca',objetivo:'Objetivos',tipo_post:'Tipo de publicaciones',
+      posts_mes:'Posts por mes',temas:'Temas de contenido',tono:'Tono de comunicación',
+      estilo:'Estilo visual',referencias:'Referencias de cuentas',material:'Material propio',
+      contrato:'Tipo de contratación',inicio:'Inicio del proyecto',
+    };
+    const datos = {};
+    const fd = new FormData(form);
+    const done = new Set();
+    for(const [k,v] of fd.entries()){
+      if(done.has(k)) continue;
+      if(form.querySelector(`input[type="checkbox"][name="${k}"]`)){
+        done.add(k);
+        const vals = cbGroups[k]||[];
+        if(vals.length) datos[labels[k]||k] = vals.join(', ');
+      } else {
+        done.add(k);
+        if(v && v.toString().trim()) datos[labels[k]||k] = v.toString().trim();
+      }
+    }
+    const range = form.querySelector('input[type="range"]');
+    if(range) datos['Posts por mes'] = range.value + ' posts/mes';
+    return datos;
+  }
+
+  // ── Enviar con Formspree ──────────────────────────────
+  async function sendEmail(e, tipo){
+    e.preventDefault();
+    const form = e.target;
+    const btn  = form.querySelector('.btn-submit');
+    const nombre       = form.querySelector('[name="nombre"]').value.trim();
+    const emailCliente = form.querySelector('[name="email"]').value.trim();
+    const label = tipo==='iv' ? 'Identidad Visual' : 'Redes Sociales';
+
+    btn.classList.add('loading');
+    btn.disabled = true;
+
+    const datos = recolectar(form);
+
+    // Formspree acepta JSON plano — cada campo llega como fila en el correo
+    const payload = {
+      _subject: `[Brief ${label}] de ${nombre}`,
+      _replyto: emailCliente,
+      "Tipo de Brief": label,
+      ...datos,
+    };
+
+    try {
+      const res = await fetch(FORMSPREE_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+
+      const json = await res.json();
+
+      if (res.ok) {
+        showToast('✓ Brief enviado. Te responderé en menos de 48 h.');
+        form.reset();
+        if(tipo==='rs') document.getElementById('rv-rs').textContent='12';
+      } else {
+        const errMsg = json?.errors?.map(e=>e.message).join(', ') || 'Error desconocido';
+        showToast('Error: ' + errMsg, true);
+        console.error('Formspree error:', json);
+      }
+    } catch(err) {
+      console.error(err);
+      showToast('Sin conexión. Escríbeme a luissilvat2@gmail.com', true);
+    }
+
+    btn.classList.remove('loading');
+    btn.disabled = false;
+  }
+</script>
+</body>
+</html>
